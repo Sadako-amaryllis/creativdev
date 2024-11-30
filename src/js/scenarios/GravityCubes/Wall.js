@@ -41,5 +41,6 @@ class Wall extends THREE.Mesh {
     update() {
         this.position.x = this.body.position.x
         this.position.y = -this.body.position.y
+        this.rotation.z = this.body.angle
     }
 }
