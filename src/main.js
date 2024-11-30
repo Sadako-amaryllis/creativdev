@@ -50,50 +50,40 @@ const update = () => {
         newBubble.vy = -Math.abs(newBubble.vy) // Descend dans la scène 1
     })  
 
-    /** Transition scène 3 → scène 2  */
-    const outScene3_up = scene3.bubbles.filter(b => b.position && b.position.y > scene3.height / 2)
-    outScene3_up.forEach(bulleToRemove => {
-        scene3.removeBubble(bulleToRemove)
-        const newCube = scene2.addCube(
-            bulleToRemove.position.x + scene2.width / 2,
-            scene2.height
-        )
-        newCube.vy = Math.abs(newCube.vy)
-    })
-
-    /** Transition scène 1 → scène 2  */
-    const outScene1_down = scene1.bubbles.filter(b => b.position && b.position.y > scene1.height / 2)
-    outScene1_down.forEach(bulleToRemove => {
-        scene1.removeBubble(bulleToRemove)
-        const newCube = scene2.addCube(
-            bulleToRemove.position.x + scene2.width / 2,
-            scene2.height
-        )
-        newCube.vy = Math.abs(newCube.vy)
-    })
-
-    /** Transition scène 3 → scène 1  */
-const outScene3_down = (scene3.bulles || []).filter(c => c.position.y > scene3.height / 2);
-outScene3_down.forEach(bulleToRemove => { 
-    scene3.removeBubble(bulleToRemove);
-    const newBubble = scene1.addBubble(
-        bulleToRemove.position.x + scene1.width / 2,
-        scene1.height
-    );
-    newBubble.vy = -Math.abs(newBubble.vy);
-});
-
-/** Transition scène 1 → scène 3  */
-const outScene1_up = (scene1.bulles || []).filter(c => c.position.y > scene1.height / 2);
-outScene1_up.forEach(bulleToRemove => { 
-    scene1.removeBubble(bulleToRemove);
-    const newBubble = scene3.addBubble(
-        bulleToRemove.position.x + scene3.width / 2,
-        scene3.height
-    );
-    newBubble.vy = -Math.abs(newBubble.vy);
-});
-
+        /** Scène 3 - Gestion des bulles qui sortent de l'écran */
+        const outScene3_up = scene3.bubbles.filter(b => { return b.y < 0 })
+        const outScene3_down = scene3.bubbles.filter(b => { return b.y > scene3.height })
+    
+        outScene3_up.forEach(bubbleToRemove => { scene3.removeBubble(bubbleToRemove) })
+        outScene3_down.forEach(bubbleToRemove => { scene3.removeBubble(bubbleToRemove) })
+    
+        outScene3_up.forEach(bubbleToMove => {
+            scene2.addCube(bubbleToMove.x - scene2.width / 2, -scene2.height / 2)
+        })
+    
+        outScene3_down.forEach(bubbleToMove => {
+            const newBubble_ = scene1.addBubble(bubbleToMove.x, 0)
+            newBubble_.vy = bubbleToMove.vy
+            newBubble_.vx = bubbleToMove.vx
+        })
+        
+       /** Scène 1 - Gestion des bulles qui sortent de l'écran */
+       const outScene1_up = scene1.bubbles.filter(b => { return b.y < 0 })
+       const outScene1_down = scene1.bubbles.filter(b => { return b.y > scene1.height })
+   
+       outScene1_up.forEach(bubbleToRemove => { scene1.removeBubble(bubbleToRemove) })
+       outScene1_down.forEach(bubbleToRemove => { scene1.removeBubble(bubbleToRemove) })
+   
+       outScene1_up.forEach(bubbleToMove => {
+           const newBubble_ = scene3.addBubble(bubbleToMove.x, scene3.height)
+           newBubble_.vx = bubbleToMove.vx
+           newBubble_.vy = bubbleToMove.vy
+       })
+   
+       outScene1_down.forEach(bubbleToMove => {
+           scene2.addCube(bubbleToMove.x - scene2.width / 2, scene2.height / 2)
+       })
+   
 
 }
 time.on("update", update)

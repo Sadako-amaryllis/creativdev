@@ -59,10 +59,18 @@ export default class SceneBouncingBubbles extends Scene2D {
             speed: 1, // positif ou negatif
             threshold: 50,
             radius: 5,
-            nBubbles: 3,
+            nBubbles: 6,
             gStrength: 300
         }
         if (!!this.debugFolder) {
+            this.debugFolder.add(this.params, "speed", -100, 100).onChange(() => {
+                if (!!this.bubbles) {
+                    this.bubbles.forEach(b => {
+                        b.vx = this.params.speed
+                        b.vy = this.params.speed
+                    })
+                }
+            })
             this.debugFolder.add(this.params, "threshold", 0, 200)
             this.debugFolder.add(this.params, "radius", 0, 30, 0.1).name("Rayon").onChange(() => {
                 if (!!this.bubbles) {
@@ -96,26 +104,18 @@ export default class SceneBouncingBubbles extends Scene2D {
     }
 
     addBubble(x, y) {
-        const bubble_ = new Bubble(this.context, x, y, this.params.radius )
+        const bubble_ = new Bubble(this.context, x, y, 5)
         this.bubbles.push(bubble_)
         return bubble_
     }
 
     removeBubble(bubble) {
-    
-        /** dispose from memory */
-        bubble.geometry.dispose()
-        bubble.material.dispose()
-        bubble.removeFromParent()
-    
-        /** dispose from matter.js */
-
-        Composite.remove(this.engine.world, bubble.body)
-    
-        /** dispose from scene */
-        this.bubbles = this.bubbles.filter(b => b !== bubble)
+        const index_ = this.bubbles.indexOf(bubble)
+        if (index_ > -1) {
+            this.bubbles.splice(index_, 1)
+        }
     }
-    
+
     draw() {
         /** style */
         this.context.strokeStyle = "white"

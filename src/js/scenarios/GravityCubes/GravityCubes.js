@@ -4,8 +4,9 @@ import { Bodies, Body } from 'matter-js'
 export default class GravityCube extends THREE.Mesh {
     constructor(size, color) {
         /** three mesh */
+        const colors = ['silver', 'purple', 'orange', 'green', 'pink']
         const geometry_ = new THREE.BoxGeometry(size, size, size)
-        const material_ = new THREE.MeshBasicMaterial({ color: color })
+        const material_ = new THREE.MeshBasicMaterial({ color: color || colors[Math.floor(Math.random() * colors.length)] })
         super(geometry_, material_)
 
         /** matter js body */

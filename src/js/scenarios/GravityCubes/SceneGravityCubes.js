@@ -14,7 +14,8 @@ export default class SceneGravityCubes extends Scene3D {
 
         /** debug */
         this.params = {
-            gScale: 1
+            gScale: 1,
+            cubeSize: 30
         }
         if(!!this.debugFolder) {
             this.debugFolder.add(this.params, "gScale", 0.5, 10, 0.1).onChange(() => {
@@ -31,7 +32,6 @@ export default class SceneGravityCubes extends Scene3D {
 
         /** walls */
         this.wallRight = new Wall('blue')
-        this.wallBottom = new Wall('red')
         this.wallLeft = new Wall('blue')
 
         this.wallMiddle1 = new Wall('green')
@@ -48,7 +48,7 @@ export default class SceneGravityCubes extends Scene3D {
         this.cubes = []
         const colors = ['red', 'yellow', 'blue']
         for(let i=0; i < 10; i++) {
-            const cube_ = new GravityCube(50, colors[i % colors.length])
+            const cube_ = new GravityCube(this.params.cubeSize, colors[i % colors.length])
             const x_ = randomRange( -this.width / 2, this.width / 2 )
             const y_ = randomRange( -this.height / 2, this.height / 2 )
             cube_.setPosition(x_, y_)
@@ -78,14 +78,6 @@ export default class SceneGravityCubes extends Scene3D {
         /** resize */
         this.resize()
     }
-    
-    addCube(x, y) {
-        console.log('Ajout du cube à la position:', x, y);  // Ajoutez un log pour vérifier
-        const newCube = new Cube(this.context, x, y, this.params.size);
-        this.cubes.push(newCube);
-        return newCube;
-    }
-    
 
     removeCube(cube) {
         /** dispose from memory */
@@ -98,6 +90,17 @@ export default class SceneGravityCubes extends Scene3D {
 
         /** dispose from scene */
         this.cubes = this.cubes.filter(c => { return c !== cube })
+    }
+
+    addCube(x, y) {
+        const newCube_ = new GravityCube(this.params.cubeSize)
+        newCube_.setPosition(x, y)
+        this.add(newCube_)
+        this.cubes.push(newCube_)
+
+        Composite.add(this.engine.world, newCube_.body)
+
+        return newCube_
     }
 
     update() {
@@ -118,24 +121,19 @@ export default class SceneGravityCubes extends Scene3D {
         this.camera.top = this.height / 2
         this.camera.bottom = -this.height / 2
 
-        if (!!this.wallRight && !!this.wallLeft) {
-            this.wallRight.setPosition(this.width / 2, 0)
+        if (!!this.wallRight) {
+            this.wallRight.setPosition(this.width / 2 + THICKNESS, 0)
             this.wallRight.setSize(THICKNESS, this.height)
 
-            this.wallLeft.setPosition(-this.width / 2, 0)
+            this.wallLeft.setPosition(-this.width / 2 - THICKNESS, 0)
             this.wallLeft.setSize(THICKNESS, this.height)
 
-            this.wallBottom.setPosition(0, -this.height / 2)
-            this.wallBottom.setSize(this.width - THICKNESS, THICKNESS)
-        }
+            this.wallMiddle1.setPosition(-this.width / 7, this.height / 6)
+            this.wallMiddle1.setSize(this.width / 1.4, THICKNESS)
 
-        if (!!this.wallMiddle1 && !!this.wallMiddle2) {
-            this.wallMiddle1.setPosition(-this.width / 4, this.height / 6)
-            this.wallMiddle1.setSize(this.width / 2, THICKNESS)
-        
-            this.wallMiddle2.setPosition(this.width / 4, -this.height / 9)
-            this.wallMiddle2.setSize(this.width / 2, THICKNESS)
-        }      
+            this.wallMiddle2.setPosition(this.width / 7, -this.height / 6)
+            this.wallMiddle2.setSize(this.width / 1.4, THICKNESS)
+        }
     }
 
     onDeviceOrientation() {
