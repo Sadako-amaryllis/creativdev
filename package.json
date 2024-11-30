@@ -1,0 +1,25 @@
+{
+  "name": "workshop-web-creadev",
+  "version": "1.0.0",
+  "description": "JS template dedicated to responsive creative websites",
+  "main": "main.js",
+  "scripts": {
+    "dev": "vite",
+    "host": "vite --host",
+    "build": "vite build"
+  },
+  "keywords": [
+    "js",
+    "canvas2d",
+    "threejs",
+    "vite"
+  ],
+  "author": "Adrien Husson",
+  "license": "MIT",
+  "dependencies": {
+    "dat.gui": "^0.7.9",
+    "matter-js": "^0.20.0",
+    "three": "^0.170.0",
+    "vite": "^5.2.8"
+  }
+}
